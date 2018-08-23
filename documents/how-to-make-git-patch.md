@@ -3,7 +3,7 @@
 Create unidfied diff suitable for `git apply` by `git diff`:
 
 ```
-git diff tag1..tag2 > mypatch.patch
+git diff > mypatch.patch
 ```
 
 Then you can apply the patch with:

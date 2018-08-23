@@ -44,6 +44,41 @@ index b377b45..a564b19 100644
      std::vector<MapPoint*> GetTrackedMapPoints();
      std::vector<cv::KeyPoint> GetTrackedKeyPointsUn();
  
+diff --git a/include/Tracking.h b/include/Tracking.h
+index 5aaa93e..ab6550d 100644
+--- a/include/Tracking.h
++++ b/include/Tracking.h
+@@ -113,6 +113,9 @@ public:
+     // True if local mapping is deactivated and we are performing only localization
+     bool mbOnlyTracking;
+ 
++    // tag for when the inserted frame becomes a keyframe
++    bool didUpdateKeyFrame;
++
+     void Reset();
+ 
+ protected:
+diff --git a/src/Frame.cc b/src/Frame.cc
+index 0e37d49..0ba52ec 100644
+--- a/src/Frame.cc
++++ b/src/Frame.cc
+@@ -116,6 +116,7 @@ Frame::Frame(const cv::Mat &imLeft, const cv::Mat &imRight, const double &timeSt
+     AssignFeaturesToGrid();
+ }
+ 
++// RGBD
+ Frame::Frame(const cv::Mat &imGray, const cv::Mat &imDepth, const double &timeStamp, ORBextractor* extractor,ORBVocabulary* voc, cv::Mat &K, cv::Mat &distCoef, const float &bf, const float &thDepth)
+     :mpORBvocabulary(voc),mpORBextractorLeft(extractor),mpORBextractorRight(static_cast<ORBextractor*>(NULL)),
+      mTimeStamp(timeStamp), mK(K.clone()),mDistCoef(distCoef.clone()), mbf(bf), mThDepth(thDepth)
+@@ -170,7 +171,7 @@ Frame::Frame(const cv::Mat &imGray, const cv::Mat &imDepth, const double &timeSt
+     AssignFeaturesToGrid();
+ }
+ 
+-
++// Monocular
+ Frame::Frame(const cv::Mat &imGray, const double &timeStamp, ORBextractor* extractor,ORBVocabulary* voc, cv::Mat &K, cv::Mat &distCoef, const float &bf, const float &thDepth)
+     :mpORBvocabulary(voc),mpORBextractorLeft(extractor),mpORBextractorRight(static_cast<ORBextractor*>(NULL)),
+      mTimeStamp(timeStamp), mK(K.clone()),mDistCoef(distCoef.clone()), mbf(bf), mThDepth(thDepth)
 diff --git a/src/System.cc b/src/System.cc
 index 8df4157..f5e0c60 100644
 --- a/src/System.cc
@@ -65,3 +100,44 @@ index 8df4157..f5e0c60 100644
  vector<MapPoint*> System::GetTrackedMapPoints()
  {
      unique_lock<mutex> lock(mMutexState);
+diff --git a/src/Tracking.cc b/src/Tracking.cc
+index 2273b2c..277a9e9 100644
+--- a/src/Tracking.cc
++++ b/src/Tracking.cc
+@@ -237,6 +237,10 @@ cv::Mat Tracking::GrabImageRGBD(const cv::Mat &imRGB,const cv::Mat &imD, const d
+ 
+ cv::Mat Tracking::GrabImageMonocular(const cv::Mat &im, const double &timestamp)
+ {
++
++    //FIXME: Initialize tag when new frame is inserted
++    didUpdateKeyFrame = false;
++
+     mImGray = im;
+ 
+     if(mImGray.channels()==3)
+@@ -417,7 +421,7 @@ void Tracking::Track()
+         // Update drawer
+         mpFrameDrawer->Update(this);
+ 
+-        // If tracking were good, check if we insert a keyframe
++        // If tracking were good, check if we insert a keyframe (THIS POINT)
+         if(bOK)
+         {
+             // Update motion model
+@@ -454,6 +458,7 @@ void Tracking::Track()
+             mlpTemporalPoints.clear();
+ 
+             // Check if we need to insert a new keyframe
++            // HERE
+             if(NeedNewKeyFrame())
+                 CreateNewKeyFrame();
+ 
+@@ -1138,6 +1143,8 @@ void Tracking::CreateNewKeyFrame()
+ 
+     mnLastKeyFrameId = mCurrentFrame.mnId;
+     mpLastKeyFrame = pKF;
++
++    didUpdateKeyFrame = true;
+ }
+ 
+ void Tracking::SearchLocalPoints()

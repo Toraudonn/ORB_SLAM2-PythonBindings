@@ -29,6 +29,7 @@ public:
     ORB_SLAM2::Tracking::eTrackingState getTrackingState() const;
     unsigned int getNumFeatures() const;
     unsigned int getNumMatches() const;
+    bool didAddKeyFrame() const;
     boost::python::list getKeyframePoints() const;
     boost::python::list getTrajectoryPoints() const;
     bool saveSettings(boost::python::dict settings) const;

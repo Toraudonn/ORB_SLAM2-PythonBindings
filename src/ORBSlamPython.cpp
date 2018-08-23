@@ -55,6 +55,7 @@ BOOST_PYTHON_MODULE(orbslam2)
         .def("get_tracking_state", &ORBSlamPython::getTrackingState)
         .def("get_num_features", &ORBSlamPython::getNumFeatures)
         .def("get_num_matched_features", &ORBSlamPython::getNumMatches)
+        .def("did_update_keyframe", &ORBSlamPython::didAddKeyFrame)
         .def("save_settings", &ORBSlamPython::saveSettings)
         .def("load_settings", &ORBSlamPython::loadSettings)
         .def("save_settings_file", &ORBSlamPython::saveSettingsFile)
@@ -256,6 +257,16 @@ unsigned int ORBSlamPython::getNumMatches() const
         return matches;
     }
     return 0;
+}
+
+bool ORBSlamPython::didAddKeyFrame() const
+{
+    if (system)
+    {
+        ORB_SLAM2::Tracking* pTracker = system->GetTracker();
+        bool didUpdate = pTracker->didUpdateKeyFrame;
+        return didUpdate;
+    }
 }
 
 boost::python::list ORBSlamPython::getKeyframePoints() const

@@ -21,6 +21,21 @@ Build orbslam as normal, and then run `make install`. This will install the ORBS
 (if an alternative installation directory is desired, specify it to cmake using `-DCMAKE_INSTALL_PREFIX=/your/desired/location`).
 
 #### Compilation
+
+
+Before compiling, change ORBSLAM2's `system.h` and `CMakeLists.txt`.
+Recompile ORBSLAM2.
+
+```
+cp orbslam-changes.diff /path/to/ORBSLAM2
+cd /path/to/ORBSLAM2
+patch -p1 < orbslam-changes.diff
+chmod +x build.sh
+./build.sh
+cd build
+make install
+```
+
 Return to the ORBSLAM-Python source, build and install it by running
 ```
 mkdir build

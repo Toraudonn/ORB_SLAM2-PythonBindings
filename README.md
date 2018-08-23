@@ -48,6 +48,17 @@ This will install the .so file to /usr/local/lib/python3.5/dist-packages, such t
 If you have changed the install location of ORBSLAM2, you need to indicate where it is installed using ``-DORB_SLAM2_DIR=/your/desired/location``,
 which should be the same as the install prefix above (and contain 'include' and 'lib' folders).
 
+(Optional)
+You may need to symbolic link the `orbslam2.so` to your desired Python (but the Python version should match).
+For example:
+
+```
+sudo ln -s /usr/local/lib/python3.5/dist-packages/orbslam2.so \
+    /home/$USERNAME/.pyenv/versions/anaconda3-5.2.0/lib/python3.6/site-packages/orbslam2.so
+```
+
+For building multiple times, this should not be a problem.
+
 Verify your installation by typing
 ```
 python3

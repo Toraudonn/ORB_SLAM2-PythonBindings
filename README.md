@@ -38,11 +38,8 @@ make install
 
 Return to the ORBSLAM-Python source, build and install it by running
 ```
-mkdir build
-cd build
-cmake ..
-make
-make install
+rm -R build
+./build.sh
 ```
 This will install the .so file to /usr/local/lib/python3.5/dist-packages, such that it should 
 If you have changed the install location of ORBSLAM2, you need to indicate where it is installed using ``-DORB_SLAM2_DIR=/your/desired/location``,
@@ -55,6 +52,11 @@ For example:
 ```
 sudo ln -s /usr/local/lib/python3.5/dist-packages/orbslam2.so \
     /home/$USERNAME/.pyenv/versions/anaconda3-5.2.0/lib/python3.6/site-packages/orbslam2.so
+
+# updated
+
+rm $HOME/.local/lib/python3.6/site-packages/orbslam2.so
+ln -s $HOME/.local/lib/python3.5/dist-packages/orbslam2.so $HOME/.local/lib/python3.6/site-packages/orbslam2.so
 ```
 
 For building multiple times, this should not be a problem.
@@ -72,6 +74,12 @@ ORBSLAM2's examples have been re-implemented in python in the examples folder.
 Run them with the same parameters as the ORBSLAM examples, i.e.:
 ```
 python3 orbslam_mono_kitti.py [PATH_TO_ORBSLAM]/Vocabulary/ORBvoc.txt [PATH_TO_ORBSLAM]/Examples/Monocular/KITTI00-02.yaml [PATH_TO_KITTI]/sequences/00/
+```
+
+Save and loading maps (only tum1 for now):
+
+```
+python3 ./examples/new_mono_tum.py [PATH_TO_ORBSLAM]/Vocabulary/ORBvoc.bin [PATH_TO_ORBSLAM]/Examples/Monocular/TUM1.yaml [PATH_TO_TUM1] [PATH_TO_MAP_FILE_TO_LOAD]
 ```
 
 #### Alternative Python Versions

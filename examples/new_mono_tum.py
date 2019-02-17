@@ -46,8 +46,9 @@ def main(vocab_path, settings_path, sequence_path, map_file):
             time.sleep(t - ttrack)
 
     slam.save_map("saved_maps/map_1.bin")
-    slam.reset_and_load_map("saved_maps/map_1.bin")
 
+    slam.reset_and_load_map("saved_maps/map_1.bin")
+    
     for idx in range(num_images):
         image = cv2.imread(os.path.join(sequence_path, rgb_filenames[idx]), cv2.IMREAD_UNCHANGED)
         tframe = timestamps[idx]

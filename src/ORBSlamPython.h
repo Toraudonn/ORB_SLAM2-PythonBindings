@@ -26,6 +26,8 @@ public:
     bool processRGBD(cv::Mat image, cv::Mat depthImage, double timestamp);
     void reset();
     void shutdown();
+    bool saveMap(std::string saveFile = "");
+    bool resetAndLoadMap(std::string saveFile = "");
     ORB_SLAM2::Tracking::eTrackingState getTrackingState() const;
     unsigned int getNumFeatures() const;
     unsigned int getNumMatches() const;
@@ -37,13 +39,15 @@ public:
     void setMode(ORB_SLAM2::System::eSensor mode);
     void setRGBMode(bool rgb);
     void setUseViewer(bool useViewer);
-    
+    void setMapFile(std::string saveFile);
+
     static bool saveSettingsFile(boost::python::dict settings, std::string settingsFilename);
     static boost::python::dict loadSettingsFile(std::string settingsFilename);
     
 private:
     std::string vocabluaryFile;
     std::string settingsFile;
+    std::string mapFile;
     ORB_SLAM2::System::eSensor sensorMode;
     std::shared_ptr<ORB_SLAM2::System> system;
     bool bUseViewer;

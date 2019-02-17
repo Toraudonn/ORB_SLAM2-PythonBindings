@@ -49,7 +49,10 @@ BOOST_PYTHON_MODULE(orbslam2)
         .def("is_running", &ORBSlamPython::isRunning)
         .def("reset", &ORBSlamPython::reset)
         .def("set_mode", &ORBSlamPython::setMode)
+        .def("save_map", &ORBSlamPython::saveMap)
+        .def("reset_and_load_map", &ORBSlamPython::resetAndLoadMap)
         .def("set_use_viewer", &ORBSlamPython::setUseViewer)
+        .def("set_map_file", &ORBSlamPython::setMapFile)
         .def("get_keyframe_points", &ORBSlamPython::getKeyframePoints)
         .def("get_trajectory_points", &ORBSlamPython::getTrajectoryPoints)
         .def("get_tracking_state", &ORBSlamPython::getTrackingState)
@@ -67,6 +70,7 @@ BOOST_PYTHON_MODULE(orbslam2)
 ORBSlamPython::ORBSlamPython(std::string vocabFile, std::string settingsFile, ORB_SLAM2::System::eSensor sensorMode)
     : vocabluaryFile(vocabFile),
     settingsFile(settingsFile),
+    mapFile(""),
     sensorMode(sensorMode),
     system(nullptr),
     bUseViewer(false),
@@ -78,6 +82,7 @@ ORBSlamPython::ORBSlamPython(std::string vocabFile, std::string settingsFile, OR
 ORBSlamPython::ORBSlamPython(const char* vocabFile, const char* settingsFile, ORB_SLAM2::System::eSensor sensorMode)
     : vocabluaryFile(vocabFile),
     settingsFile(settingsFile),
+    mapFile(""),
     sensorMode(sensorMode),
     system(nullptr),
     bUseViewer(false),
@@ -92,7 +97,7 @@ ORBSlamPython::~ORBSlamPython()
 
 bool ORBSlamPython::initialize()
 {
-    system = std::make_shared<ORB_SLAM2::System>(vocabluaryFile, settingsFile, sensorMode, bUseViewer);
+    system = std::make_shared<ORB_SLAM2::System>(vocabluaryFile, settingsFile, sensorMode, bUseViewer, mapFile);
     return true;
 }
 
@@ -210,6 +215,52 @@ void ORBSlamPython::shutdown()
         system->Shutdown();
         system.reset();
     }
+}
+
+bool ORBSlamPython::saveMap(std::string saveFile)
+{
+    if (system)
+    {
+        if (saveFile.empty())
+        {
+            system->SaveManual(mapFile);
+        }
+        else
+        {
+            system->SaveManual(saveFile);
+        }
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool ORBSlamPython::resetAndLoadMap(std::string saveFile)
+{
+    if (system)
+    {
+        if (saveFile.empty())
+        {
+            system->ResetAndLoad(mapFile);
+        }
+        else 
+        {
+            system->ResetAndLoad(saveFile);
+        }
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+    
+}
+
+void ORBSlamPython::setMapFile(std::string saveFile)
+{
+    mapFile = saveFile;
 }
 
 ORB_SLAM2::Tracking::eTrackingState ORBSlamPython::getTrackingState() const

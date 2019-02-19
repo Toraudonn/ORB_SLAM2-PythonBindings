@@ -61,6 +61,8 @@ def main(vocab_path, settings_path, sequence_path, map_file):
         slam.process_image_mono(image, tframe)
         t2 = time.time()
 
+        print(slam.get_tracking_state())
+
         ttrack = t2 - t1
         times_track[idx] = ttrack
 
@@ -121,4 +123,5 @@ def save_trajectory(trajectory, filename):
 if __name__ == '__main__':
     if len(sys.argv) < 5:
         print('Usage: ./orbslam_mono_tum path_to_vocabulary path_to_settings path_to_sequence path_to_map_file')
-    main(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
+    # main(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
+    main("../ORB_SLAM2/Vocabulary/ORBvoc.bin", "../ORB_SLAM2/Examples/Monocular/TUM1.yaml", "/home/haruishi/data/rgbd_dataset_freiburg1_xyz", "")

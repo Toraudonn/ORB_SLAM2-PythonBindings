@@ -459,14 +459,14 @@ boost::python::list getMapPoints() const
 	std::vector<ORB_SLAM2::MapPoint*> allMapPoints = system.GetMap()->GetAllMapPoints();
 
     //NOTE: debug
-	std::cout << "# size=" << allMapPoints.size() << std::endl;
-	std::cout << "# x,y,z" << std::endl;
+	//std::cout << "# size=" << allMapPoints.size() << std::endl;
+	//std::cout << "# x,y,z" << std::endl;
 	
     for (auto p : allMapPoints) {
 		Eigen::Matrix<double, 3, 1> v = ORB_SLAM2::Converter::toVector3d(p->GetWorldPos());
 
         //NOTE: debug
-		std::cout << v.x() << "," << v.y() << "," << v.z() << std::endl;
+		//std::cout << v.x() << "," << v.y() << "," << v.z() << std::endl;
 
         mapPoints.append(boost::python::make_tuple(
                             v.x(),

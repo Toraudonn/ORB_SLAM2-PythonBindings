@@ -43,6 +43,9 @@ public:
 
     static bool saveSettingsFile(boost::python::dict settings, std::string settingsFilename);
     static boost::python::dict loadSettingsFile(std::string settingsFilename);
+
+    //NOTE: currently working
+    boost::python::list getMapPoints() const;
     
 private:
     std::string vocabluaryFile;

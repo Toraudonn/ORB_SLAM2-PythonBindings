@@ -445,6 +445,37 @@ boost::python::list ORBSlamPython::getTrajectoryPoints() const
     return trajectory;
 }
 
+boost::python::list getMapPoints() const
+{
+    if (!system)
+    {
+        return boost::python::list();
+    }
+
+    // initialize a list
+    boost::python::list mapPoints;
+
+    // output map points
+	std::vector<ORB_SLAM2::MapPoint*> allMapPoints = system.GetMap()->GetAllMapPoints();
+
+    //NOTE: debug
+	std::cout << "# size=" << allMapPoints.size() << std::endl;
+	std::cout << "# x,y,z" << std::endl;
+	
+    for (auto p : allMapPoints) {
+		Eigen::Matrix<double, 3, 1> v = ORB_SLAM2::Converter::toVector3d(p->GetWorldPos());
+		std::cout << v.x() << "," << v.y() << "," << v.z() << std::endl;
+
+        mapPoints.append(boost::python::make_tuple(
+                            v.x(),
+                            v.y(),
+                            v.z(),
+                        ));
+	}
+    
+    return mapPoints;
+}
+
 void ORBSlamPython::setMode(ORB_SLAM2::System::eSensor mode)
 {
     sensorMode = mode;

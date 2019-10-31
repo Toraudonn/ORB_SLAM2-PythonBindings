@@ -424,8 +424,11 @@ boost::python::list ORBSlamPython::getTrajectoryPoints() const
             cv::Mat Rwc = Tcw.rowRange(0,3).colRange(0,3).t();
             cv::Mat twc = -Rwc*Tcw.rowRange(0,3).col(3);
 
+            long unsigned int frameId = pKF->mnFrameId;  //Note: added frame id
+
             trajectory.append(boost::python::make_tuple(
                                 *lT,
+                                frameId,  // added frame id 
                                 Rwc.at<float>(0,0),
                                 Rwc.at<float>(0,1),
                                 Rwc.at<float>(0,2),

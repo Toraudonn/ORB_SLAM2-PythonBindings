@@ -448,7 +448,7 @@ boost::python::list ORBSlamPython::getTrajectoryPoints() const
     return trajectory;
 }
 
-boost::python::list getMapPoints() const
+boost::python::list ORBSlamPython::getMapPoints() const
 {
     if (!system)
     {
@@ -459,7 +459,7 @@ boost::python::list getMapPoints() const
     boost::python::list mapPoints;
 
     // output map points
-	std::vector<ORB_SLAM2::MapPoint*> allMapPoints = system.GetMap()->GetAllMapPoints();
+	std::vector<ORB_SLAM2::MapPoint*> allMapPoints = system->GetMap()->GetAllMapPoints();
 
     //NOTE: debug
 	//std::cout << "# size=" << allMapPoints.size() << std::endl;
@@ -474,7 +474,7 @@ boost::python::list getMapPoints() const
         mapPoints.append(boost::python::make_tuple(
                             v.x(),
                             v.y(),
-                            v.z(),
+                            v.z()
                         ));
 	}
     

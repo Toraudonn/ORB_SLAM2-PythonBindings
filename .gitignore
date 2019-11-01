@@ -41,3 +41,4 @@ build/
 saved_maps/
 .vscode/
 trajectory.txt
+keyframe.txt

@@ -55,6 +55,7 @@ BOOST_PYTHON_MODULE(orbslam2)
         .def("set_map_file", &ORBSlamPython::setMapFile)
         .def("get_keyframe_points", &ORBSlamPython::getKeyframePoints)
         .def("get_trajectory_points", &ORBSlamPython::getTrajectoryPoints)
+        .def("get_map_points", &ORBSlamPython::getMapPoints)
         .def("get_tracking_state", &ORBSlamPython::getTrackingState)
         .def("get_num_features", &ORBSlamPython::getNumFeatures)
         .def("get_num_matched_features", &ORBSlamPython::getNumMatches)
@@ -348,8 +349,12 @@ boost::python::list ORBSlamPython::getKeyframePoints() const
 
         cv::Mat R = pKF->GetRotation().t();
         cv::Mat t = pKF->GetCameraCenter();
+
+        long unsigned int frameId = pKF->mnFrameId;  //Note: added frame id
+
         trajectory.append(boost::python::make_tuple(
                               pKF->mTimeStamp,
+                              frameId,
                               R.at<float>(0,0),
                               R.at<float>(0,1),
                               R.at<float>(0,2),

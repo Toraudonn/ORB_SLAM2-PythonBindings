@@ -20,34 +20,44 @@ def main(vocab_path, settings_path, sequence_path, map_file):
     print('Start processing sequence ...')
     print('Images in the sequence: {0}'.format(num_images))
 
-    for idx in range(num_images):
-        image = cv2.imread(os.path.join(sequence_path, rgb_filenames[idx]), cv2.IMREAD_UNCHANGED)
-        tframe = timestamps[idx]
+    iterations = 0
 
-        if image is None:
-            print("failed to load image at {0}".format(os.path.join(sequence_path, rgb_filenames[idx])))
-            return 1
+    while iterations < 2:
+        slam.reset()
 
-        t1 = time.time()
-        slam.process_image_mono(image, tframe)
-        t2 = time.time()
+        frame_count = 0
 
-        ttrack = t2 - t1
-        times_track[idx] = ttrack
+        for idx in range(num_images):
+            image = cv2.imread(os.path.join(sequence_path, rgb_filenames[idx]), cv2.IMREAD_UNCHANGED)
+            tframe = timestamps[idx]
 
-        t = 0
-        if idx < num_images - 1:
-            t = timestamps[idx + 1] - tframe
-        elif idx > 0:
-            t = tframe - timestamps[idx - 1]
+            if image is None:
+                print("failed to load image at {0}".format(os.path.join(sequence_path, rgb_filenames[idx])))
+                return 1
 
-        if ttrack < t:
-            time.sleep(t - ttrack)
-        
-        print(slam.get_tracking_state())
-        if slam.get_tracking_state() == orbslam2.TrackingState.OK:
-            break
-        
+            t1 = time.time()
+            slam.process_image_mono(image, tframe)
+            t2 = time.time()
+
+            ttrack = t2 - t1
+            times_track[idx] = ttrack
+
+            t = 0
+            if idx < num_images - 1:
+                t = timestamps[idx + 1] - tframe
+            elif idx > 0:
+                t = tframe - timestamps[idx - 1]
+
+            if ttrack < t:
+                time.sleep(t - ttrack)
+            
+            print(frame_count, slam.get_tracking_state())
+            if slam.get_tracking_state() == orbslam2.TrackingState.OK:
+                break
+
+            frame_count += 1
+
+        iterations += 1
     
     save_trajectory(slam.get_trajectory_points(), 'trajectory.txt')
 

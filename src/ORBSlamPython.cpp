@@ -350,7 +350,7 @@ boost::python::list ORBSlamPython::getKeyframePoints() const
         cv::Mat R = pKF->GetRotation().t();
         cv::Mat t = pKF->GetCameraCenter();
 
-        long unsigned int frameId = pKF->mnFrameId;  //Note: added frame id
+        long unsigned int frameId = pKF->frameId;  //Note: added frame id
 
         trajectory.append(boost::python::make_tuple(
                               pKF->mTimeStamp,
@@ -429,7 +429,7 @@ boost::python::list ORBSlamPython::getTrajectoryPoints() const
             cv::Mat Rwc = Tcw.rowRange(0,3).colRange(0,3).t();
             cv::Mat twc = -Rwc*Tcw.rowRange(0,3).col(3);
 
-            long unsigned int frameId = pKF->mnFrameId;  //Note: added frame id
+            long unsigned int frameId = pKF->frameId;  //Note: added frame id
 
             trajectory.append(boost::python::make_tuple(
                                 *lT,
